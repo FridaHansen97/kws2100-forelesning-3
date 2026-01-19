@@ -26,7 +26,7 @@ const fylkeLayer = new VectorLayer({
 });
 
 const kommuneSource = new VectorSource({
-  url: "kws2100-forelesning-3/geojson/kommuner.geojson",
+  url: "/kws2100-forelesning-3/geojson/kommuner.geojson",
   format: new GeoJSON(),
 });
 const kommuneLayer = new VectorLayer({ source: kommuneSource });
