@@ -23,7 +23,7 @@ const layers = [new TileLayer({ source: new OSM() }), fylkeLayer];
 
 const map = new Map({
   layers,
-  view: new View({ zoom: 9, center: [10, 59.5] }),
+  view: new View({ zoom: 9, center: [10, 59.6] }),
 });
 
 export function Application() {
