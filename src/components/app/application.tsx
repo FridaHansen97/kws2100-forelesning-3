@@ -85,7 +85,19 @@ export function Application() {
           ? selectedKommune.getProperties()["kommunenavn"]
           : "Kart over administrative områder i Norge"}
       </h1>
-      <div ref={mapRef}></div>
+      <main>
+        <div ref={mapRef}></div>
+        <aside>
+          <h2>Alle kommuner</h2>
+          <ul>
+            {alleKommuner
+              .map((f) => f.getProperties())
+              .map((k) => (
+                <li>{k["kommunenavn"]}</li>
+              ))}
+          </ul>
+        </aside>
+      </main>
     </>
   );
 }
