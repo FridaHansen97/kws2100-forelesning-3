@@ -21,9 +21,10 @@ export function Application() {
     map.setTarget(mapRef.current!);
   }, []);
 
-  return;
-  <>
-    <h1>Kart over administrative områder i Norge</h1>
-    <div ref={mapRef}></div>
-  </>;
+  return (
+    <>
+      <h1>Kart over administrative områder i Norge</h1>
+      <div ref={mapRef}></div>
+    </>
+  );
 }
