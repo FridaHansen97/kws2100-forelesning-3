@@ -1,0 +1,39 @@
+{
+  "name": "kws2100-forelesning-3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc --noEmit && prettier --check .",
+    "prepare": "husky",
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FridaHansen97/kws2100-forelesning-3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FridaHansen97/kws2100-forelesning-3/issues"
+  },
+  "homepage": "https://github.com/FridaHansen97/kws2100-forelesning-3#readme",
+  "type": "module",
+  "module": "type",
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "scrips": {
+    "dev": "vite"
+  }
+}
