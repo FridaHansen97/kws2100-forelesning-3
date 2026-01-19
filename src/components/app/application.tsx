@@ -2,10 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { Map, View } from "ol";
 import TileLayer from "ol/layer/Tile.js";
 import { OSM } from "ol/source.js";
+import { useGeographic } from "ol/proj.js";
+
+useGeographic();
 
 const map = new Map({
   layers: [new TileLayer({ source: new OSM() })],
-  view: new View({ zoom: 7, center: [7, 59] }),
+  view: new View({ zoom: 9, center: [10, 59.5] }),
 });
 
 export function Application() {
