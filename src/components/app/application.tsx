@@ -10,6 +10,7 @@ import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import { GeoJSON } from "ol/format.js";
 import { Fill, Stroke, Style, Text } from "ol/style.js";
+import { getCenter } from "ol/extent.js";
 
 useGeographic();
 
@@ -78,6 +79,12 @@ export function Application() {
     );
   }, []);
 
+  function handleClick(kommuneProperties: Record<string, any>) {
+    const { geometry, ...properties } = kommuneProperties;
+    console.log(properties);
+    view.animate({ center: getCenter(geometry.getExtent()) });
+  }
+
   return (
     <>
       <h1>
@@ -89,11 +96,17 @@ export function Application() {
         <div ref={mapRef}></div>
         <aside>
           <h2>Alle kommuner</h2>
+
           <ul>
             {alleKommuner
               .map((f) => f.getProperties())
+              .sort((a, b) => a["kommunenavn"].localeCompare(b["kommunenavn"]))
               .map((k) => (
-                <li>{k["kommunenavn"]}</li>
+                <li>
+                  <a href={"#"} onClick={(e) => handleClick(k)}>
+                    {k["kommunenavn"]}
+                  </a>
+                </li>
               ))}
           </ul>
         </aside>
