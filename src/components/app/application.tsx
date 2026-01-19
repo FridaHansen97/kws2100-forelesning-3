@@ -25,23 +25,21 @@ const fylkeLayer = new VectorLayer({
   }),
 });
 
-const kommuneLayer = new VectorLayer({
-  source: new VectorSource({
-    url: "kws2100-forelesning-3/geojson/kommuner.geojson",
-    format: new GeoJSON(),
-  }),
+const kommuneSource = new VectorSource({
+  url: "kws2100-forelesning-3/geojson/kommuner.geojson",
+  format: new GeoJSON(),
 });
+const kommuneLayer = new VectorLayer({ source: kommuneSource });
 
 const layers = [new TileLayer({ source: new OSM() }), fylkeLayer, kommuneLayer];
 
-const map = new Map({
-  layers,
-  view: new View({ zoom: 9, center: [10, 59.6] }),
-});
+const view = new View({ zoom: 9, center: [10, 59.5] });
+const map = new Map({ layers, view });
 
 export function Application() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [activeFylke, setActiveFylke] = useState<Feature>();
+  const [alleKommuner, setAlleKommuner] = useState<Feature[]>([]);
 
   function handlePointerMove(e: MapBrowserEvent) {
     let fylkeUnderPointer = fylkeSource.getFeaturesAtCoordinate(e.coordinate);
@@ -49,7 +47,6 @@ export function Application() {
       fylkeUnderPointer.length > 0 ? fylkeUnderPointer[0] : undefined,
     );
   }
-
   useEffect(() => {
     activeFylke?.setStyle(
       (feature) =>
@@ -64,16 +61,28 @@ export function Application() {
     return () => activeFylke?.setStyle(undefined);
   }, [activeFylke]);
 
+  const [selectedKommune, setSelectedKommune] = useState<Feature>();
+  function handleMapClick(e: MapBrowserEvent) {
+    const clickedKommune = kommuneSource.getFeaturesAtCoordinate(e.coordinate);
+    setSelectedKommune(
+      clickedKommune.length > 0 ? clickedKommune[0] : undefined,
+    );
+  }
+
   useEffect(() => {
     map.setTarget(mapRef.current!);
     map.on("pointermove", handlePointerMove);
+    map.on("click", handleMapClick);
+    kommuneSource.on("change", () =>
+      setAlleKommuner(kommuneSource.getFeatures()),
+    );
   }, []);
 
   return (
     <>
       <h1>
-        {activeFylke
-          ? activeFylke.getProperties()["fylkesnavn"]
+        {selectedKommune
+          ? selectedKommune.getProperties()["kommunenavn"]
           : "Kart over administrative områder i Norge"}
       </h1>
       <div ref={mapRef}></div>
