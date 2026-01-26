@@ -58,6 +58,20 @@ fetch(
   );
 });
 
+const arcticLayer = new TileLayer();
+fetch("/kws2100-forelesning-3/artic.xml").then(async (res) => {
+  const parser = new WMTSCapabilities();
+  const capabilities = parser.read(await res.text());
+  arcticLayer.setSource(
+    new WMTS(
+      optionsFromCapabilities(capabilities, {
+        layer: "arctic_cascading",
+        matrixSet: "3575",
+      })!,
+    ),
+  );
+});
+
 export function BackgrundLayerSelect({
   setBackroundLayer,
 }: {
@@ -79,6 +93,8 @@ export function BackgrundLayerSelect({
       setBackroundLayer(kartverketLayer);
     } else if (backgroundLayerValue === "flyfoto") {
       setBackroundLayer(flyfotoLayer);
+    } else if (backgroundLayerValue === "arctic") {
+      setBackroundLayer(arcticLayer);
     }
   }, [backgroundLayerValue]);
 
@@ -88,6 +104,7 @@ export function BackgrundLayerSelect({
       onChange={(event) => setBackgroundLayerValue(event.target.value)}
     >
       <option value={"osm"}>OpenStreetMap bakgrunn</option>
+      <option value={"arctic"}>Arctisk bakgrunn</option>
       <option value={"stadia"}>Stadia bakgrunnskart</option>
       <option value={"kartverket"}>Kartverket bakgrunnskart</option>
       <option value={"flyfoto"}>Flyfoto</option>
