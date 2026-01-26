@@ -32,6 +32,7 @@ export function KommuneLayerCheckbox({
   const [checked, setChecked] = useState(false);
   useEffect(() => {
     setKommuneLayers(checked ? [kommuneLayer] : []);
+    setAlleKommuner(checked ? kommuneSource.getFeatures() : []);
   }, [checked]);
   useEffect(() => {
     map.on("click", handleMapClick);
