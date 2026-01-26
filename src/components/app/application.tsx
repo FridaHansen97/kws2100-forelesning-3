@@ -9,14 +9,9 @@ import "./application.css";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import { GeoJSON } from "ol/format.js";
-import { Stroke, Style, Text } from "ol/style.js";
 import { getCenter } from "ol/extent.js";
 import { Layer } from "ol/layer.js";
-import {
-  fylkeLayer,
-  FylkesLayerCheckbox,
-  fylkeSource,
-} from "../layer/fylkesLayerCheckbox.js";
+import { FylkesLayerCheckbox } from "../layer/fylkesLayerCheckbox.js";
 
 useGeographic();
 
@@ -29,63 +24,47 @@ const kommuneLayer = new VectorLayer({ source: kommuneSource });
 const view = new View({ zoom: 9, center: [10, 59.5] });
 const map = new Map({ view });
 
+function KommuneLayerCheckbox({
+  setKommuneLayers,
+}: {
+  setKommuneLayers: (value: Layer[]) => void;
+  map: Map;
+}) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <button onClick={() => setChecked((b) => !b)} tabIndex={-1}>
+      <input type={"checkbox"} checked={checked} />
+      Vis kommuner
+    </button>
+  );
+}
+
 export function Application() {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const [activeFylke, setActiveFylke] = useState<Feature>();
   const [alleKommuner, setAlleKommuner] = useState<Feature[]>([]);
+  const [selectedKommune, setSelectedKommune] = useState<Feature>();
 
   const [fylkesLayers, setFylkesLayers] = useState<Layer[]>([]);
-
+  const [kommuneLayers, setKommuneLayers] = useState<Layer[]>([]);
+  const [backgroundLayer, setBackgroundLayer] = useState<Layer>(
+    new TileLayer({ source: new OSM() }),
+  );
   const layers = useMemo(
-    () => [
-      new TileLayer({ source: new OSM() }),
-      ...(fylkesLayers ? [fylkeLayer] : []),
-      kommuneLayer,
-    ],
-    [fylkesLayers],
+    () => [backgroundLayer, ...fylkesLayers, ...kommuneLayers],
+    [backgroundLayer, fylkesLayers, kommuneLayers],
   );
   useEffect(() => map.setLayers(layers), [layers]);
 
-  function handlePointerMove(e: MapBrowserEvent) {
-    let fylkeUnderPointer = fylkeSource.getFeaturesAtCoordinate(e.coordinate);
-    setActiveFylke(
-      fylkeUnderPointer.length > 0 ? fylkeUnderPointer[0] : undefined,
-    );
-  }
-  useEffect(() => {
-    activeFylke?.setStyle(
-      (feature) =>
-        new Style({
-          stroke: new Stroke({ color: "green", width: 4 }),
-          text: new Text({
-            text: feature.getProperties()["fylkesnavn"],
-          }),
-        }),
-    );
-    //returnerer stylen for fylket når musepeker ikke er over den..
-    return () => activeFylke?.setStyle(undefined);
-  }, [activeFylke]);
-
-  const [selectedKommune, setSelectedKommune] = useState<Feature>();
-  function handleMapClick(e: MapBrowserEvent) {
-    const clickedKommune = kommuneSource.getFeaturesAtCoordinate(e.coordinate);
-    setSelectedKommune(
-      clickedKommune.length > 0 ? clickedKommune[0] : undefined,
-    );
-  }
-
   useEffect(() => {
     map.setTarget(mapRef.current!);
-    map.on("pointermove", handlePointerMove);
-    map.on("click", handleMapClick);
+    //map.on("click", handleMapClick);
     kommuneSource.on("change", () =>
       setAlleKommuner(kommuneSource.getFeatures()),
     );
   }, []);
 
   function handleClick(kommuneProperties: Record<string, any>) {
-    const { geometry, ...properties } = kommuneProperties;
-    console.log(properties);
+    const { geometry } = kommuneProperties;
     view.animate({ center: getCenter(geometry.getExtent()) });
   }
 
@@ -98,7 +77,8 @@ export function Application() {
             : "Kart over administrative områder i Norge"}
         </h1>
         <div>
-          <FylkesLayerCheckbox setFylkesLayers={setFylkesLayers} />
+          <FylkesLayerCheckbox setFylkesLayers={setFylkesLayers} map={map} />
+          <KommuneLayerCheckbox setKommuneLayers={setKommuneLayers} map={map} />
         </div>
       </header>
 
