@@ -121,7 +121,7 @@ export function Application() {
               .sort((a, b) => a["kommunenavn"].localeCompare(b["kommunenavn"]))
               .map((k) => (
                 <li>
-                  <a href={"#"} onClick={(e) => handleClick(k)}>
+                  <a href={"#"} onClick={() => handleClick(k)}>
                     {k["kommunenavn"]}
                   </a>
                 </li>
