@@ -10,6 +10,7 @@ import { getCenter } from "ol/extent.js";
 import { Layer } from "ol/layer.js";
 import { FylkesLayerCheckbox } from "../layers/fylkesLayerCheckbox.js";
 import { KommuneLayerCheckbox } from "../layers/kommuneLayerCheckbox.js";
+import { BackgrundLayerSelect } from "../layers/backgrundLayerSelect.js";
 
 useGeographic();
 
@@ -50,6 +51,7 @@ export function Application() {
             : "Kart over administrative områder i Norge"}
         </h1>
         <div>
+          <BackgrundLayerSelect setBackroundLayer={setBackgroundLayer} />
           <FylkesLayerCheckbox setFylkesLayers={setFylkesLayers} map={map} />
           <KommuneLayerCheckbox
             setKommuneLayers={setKommuneLayers}
